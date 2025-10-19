@@ -1,0 +1,152 @@
+/* src/components/SOSButton.css */
+.sos-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  padding: 20px;
+}
+
+.sos-button {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  border: 6px solid rgba(255, 255, 255, 0.5);
+  background: radial-gradient(circle, #ff4757 0%, #c92a2a 100%);
+  color: white;
+  font-size: 48px;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.3s;
+  box-shadow: 0 8px 30px rgba(220, 38, 38, 0.4);
+  position: relative;
+  overflow: hidden;
+}
+
+.sos-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.3) 0%, transparent 70%);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.sos-button:hover::before {
+  opacity: 1;
+}
+
+.sos-button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 12px 40px rgba(220, 38, 38, 0.6);
+}
+
+.sos-button.pressed {
+  transform: scale(0.95);
+  box-shadow: 0 4px 15px rgba(220, 38, 38, 0.8);
+  animation: pulse 1s infinite;
+}
+
+.sos-button.loading {
+  cursor: not-allowed;
+  opacity: 0.7;
+  animation: rotate 1s linear infinite;
+}
+
+.sos-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.sos-text {
+  font-size: 48px;
+  letter-spacing: 3px;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.sos-subtext {
+  font-size: 12px;
+  font-weight: 500;
+  margin-top: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.7);
+  }
+  50% {
+    box-shadow: 0 0 0 20px rgba(220, 38, 38, 0);
+  }
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.sos-message {
+  padding: 15px 30px;
+  border-radius: 8px;
+  font-weight: 600;
+  text-align: center;
+  animation: slideIn 0.3s;
+}
+
+.sos-message.success {
+  background: #d1fae5;
+  color: #065f46;
+  border: 2px solid #10b981;
+}
+
+.sos-message.error {
+  background: #fee2e2;
+  color: #991b1b;
+  border: 2px solid #dc2626;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.sos-instructions {
+  text-align: center;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.sos-instructions p {
+  margin: 5px 0;
+}
+
+@media (max-width: 768px) {
+  .sos-button {
+    width: 150px;
+    height: 150px;
+    font-size: 36px;
+  }
+
+  .sos-text {
+    font-size: 36px;
+  }
+}
