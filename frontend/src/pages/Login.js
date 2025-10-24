@@ -1,11 +1,14 @@
 // src/pages/Login.js
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { authAPI } from '../services/api';
+import LanguageSwitcherSimple from '../components/LanguageSwitcherSimple';
 import './Auth.css';
 
 function Login() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [formData, setFormData] = useState({
     email: '',
     password: ''
@@ -47,49 +50,52 @@ function Login() {
   return (
     <div className="auth-container">
       <div className="auth-box">
-        <h1>🛡️ Tourist Safety System</h1>
-        <h2>Login</h2>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+          <h1>🛡️ SecureTrip</h1>
+          <LanguageSwitcherSimple />
+        </div>
+        <h2>{t('login')}</h2>
         
         {error && <div className="error-message">{error}</div>}
         
         <form onSubmit={handleSubmit}>
           <div className="form-group">
-            <label>Email</label>
+            <label>{t('email')}</label>
             <input
               type="email"
               name="email"
               value={formData.email}
               onChange={handleChange}
-              placeholder="Enter your email"
+              placeholder={t('email')}
               required
             />
           </div>
 
           <div className="form-group">
-            <label>Password</label>
+            <label>{t('password')}</label>
             <input
               type="password"
               name="password"
               value={formData.password}
               onChange={handleChange}
-              placeholder="Enter your password"
+              placeholder={t('password')}
               required
             />
           </div>
 
           <button type="submit" className="btn-primary" disabled={loading}>
-            {loading ? 'Logging in...' : 'Login'}
+            {loading ? t('loading') : t('login')}
           </button>
         </form>
 
         <p className="auth-link">
-          Don't have an account? <Link to="/register">Register here</Link>
+          {t('dont_have_account')} <Link to="/register">{t('register_here')}</Link>
         </p>
 
         <div className="demo-credentials">
           <h4>Demo Credentials:</h4>
-          <p><strong>Tourist:</strong> john@test.com / password123</p>
-          <p><strong>Authority:</strong> officer@police.com / police123</p>
+          <p><strong>{t('tourist')}:</strong> john@test.com / password123</p>
+          <p><strong>{t('authority')}:</strong> officer@police.com / police123</p>
         </div>
       </div>
     </div>

@@ -1,6 +1,7 @@
-// src/pages/AuthorityDashboard.js - ENHANCED VERSION
+// src/pages/AuthorityDashboard.js - COMPLETE i18n VERSION
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import io from 'socket.io-client';
 import { alertAPI, touristAPI } from '../services/api';
 import AlertsList from '../components/AlertsList';
@@ -8,12 +9,14 @@ import LiveMap from '../components/LiveMap';
 import AnalyticsDashboard from '../components/AnalyticsDashboard';
 import SearchFilter from '../components/SearchFilter';
 import DarkModeToggle from '../components/DarkModeToggle';
+import LanguageSwitcherSimple from '../components/LanguageSwitcherSimple';
 import './Dashboard.css';
 
 const SOCKET_URL = 'http://localhost:5000';
 
 function AuthorityDashboard() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [user, setUser] = useState(null);
   const [activeAlerts, setActiveAlerts] = useState([]);
   const [filteredAlerts, setFilteredAlerts] = useState([]);
@@ -27,7 +30,7 @@ function AuthorityDashboard() {
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('alerts');
 
-  // Safe zones (you can make this dynamic from backend later)
+  // Safe zones
   const safeZones = [
     { 
       name: 'Hazratganj Police Station',
@@ -234,38 +237,38 @@ function AuthorityDashboard() {
   };
 
   if (loading) {
-    return <div className="loading">Loading...</div>;
+    return <div className="loading">{t('loading')}</div>;
   }
 
   return (
     <div className="dashboard authority-dashboard">
       <header className="dashboard-header">
-        <h1>👮 Authority Control Center</h1>
+        <h1>👮 {t('authority_dashboard')}</h1>
         <div className="header-actions">
+          <LanguageSwitcherSimple />
           <span className="user-name">{user?.name}</span>
-          <button onClick={handleLogout} className="btn-logout">Logout</button>
+          <button onClick={handleLogout} className="btn-logout">{t('logout')}</button>
         </div>
       </header>
 
-      {/* Tab Navigation */}
       <div className="dashboard-tabs">
         <button 
           className={`tab-btn ${activeTab === 'alerts' ? 'active' : ''}`}
           onClick={() => setActiveTab('alerts')}
         >
-          🚨 Alerts ({activeAlerts.length})
+          🚨 {t('alerts')} ({activeAlerts.length})
         </button>
         <button 
           className={`tab-btn ${activeTab === 'map' ? 'active' : ''}`}
           onClick={() => setActiveTab('map')}
         >
-          🗺️ Live Map
+          🗺️ {t('live_map')}
         </button>
         <button 
           className={`tab-btn ${activeTab === 'analytics' ? 'active' : ''}`}
           onClick={() => setActiveTab('analytics')}
         >
-          📊 Analytics
+          📊 {t('analytics')}
         </button>
       </div>
 
@@ -273,19 +276,19 @@ function AuthorityDashboard() {
         {/* Stats Cards */}
         <div className="stats-grid">
           <div className="stat-card total">
-            <h3>Total Alerts</h3>
+            <h3>{t('total_alerts')}</h3>
             <p className="stat-number">{stats.totalAlerts}</p>
           </div>
           <div className="stat-card active">
-            <h3>Active Alerts</h3>
+            <h3>{t('active_alerts')}</h3>
             <p className="stat-number">{stats.activeAlerts}</p>
           </div>
           <div className="stat-card resolved">
-            <h3>Resolved</h3>
+            <h3>{t('resolved')}</h3>
             <p className="stat-number">{stats.resolvedAlerts}</p>
           </div>
           <div className="stat-card tourists">
-            <h3>Active Tourists</h3>
+            <h3>{t('active_tourists')}</h3>
             <p className="stat-number">{tourists.length}</p>
           </div>
         </div>
@@ -293,13 +296,13 @@ function AuthorityDashboard() {
         {/* Tab Content */}
         {activeTab === 'alerts' && (
           <div className="alerts-section">
-            <h2>🚨 Active Alerts</h2>
+            <h2>🚨 {t('active_alerts_section')}</h2>
             
             <SearchFilter onFilter={handleFilter} />
 
             {filteredAlerts.length === 0 ? (
               <div className="no-alerts-authority">
-                <p>✅ No active alerts matching your filters!</p>
+                <p>✅ {t('no_active_alerts')}</p>
               </div>
             ) : (
               <AlertsList
@@ -313,7 +316,7 @@ function AuthorityDashboard() {
 
         {activeTab === 'map' && (
           <div className="map-section">
-            <h2>🗺️ Live Tracking Map</h2>
+            <h2>🗺️ {t('live_tracking_map')}</h2>
             <LiveMap 
               alerts={activeAlerts} 
               tourists={tourists}

@@ -1,15 +1,20 @@
-// src/pages/TouristDashboard.js - ENHANCED VERSION
+// src/pages/TouristDashboard.js - COMPLETE i18n VERSION
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { alertAPI } from '../services/api';
 import SOSButton from '../components/SOSButton';
 import IncidentReport from '../components/IncidentReport';
 import EmergencyContacts from '../components/EmergencyContacts';
 import DarkModeToggle from '../components/DarkModeToggle';
+import LanguageSwitcher from '../components/LanguageSwitcher';
+import LanguageSwitcherSimple from '../components/LanguageSwitcherSimple';
 import './Dashboard.css';
 
 function TouristDashboard() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [user, setUser] = useState(null);
   const [myAlerts, setMyAlerts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -59,16 +64,17 @@ function TouristDashboard() {
   };
 
   if (loading) {
-    return <div className="loading">Loading...</div>;
+    return <div className="loading">{t('loading')}</div>;
   }
 
   return (
     <div className="dashboard">
       <header className="dashboard-header">
-        <h1>🛡️ Tourist Safety Dashboard</h1>
+        <h1>🛡️ {t('tourist_dashboard')}</h1>
         <div className="header-actions">
-          <span className="user-name">Welcome, {user?.name}!</span>
-          <button onClick={handleLogout} className="btn-logout">Logout</button>
+          <LanguageSwitcherSimple />
+          <span className="user-name">{t('welcome')}, {user?.name}!</span>
+          <button onClick={handleLogout} className="btn-logout">{t('logout')}</button>
         </div>
       </header>
 
@@ -78,19 +84,19 @@ function TouristDashboard() {
           className={`tab-btn ${activeTab === 'overview' ? 'active' : ''}`}
           onClick={() => setActiveTab('overview')}
         >
-          🏠 Overview
+          🏠 {t('overview')}
         </button>
         <button 
           className={`tab-btn ${activeTab === 'emergency' ? 'active' : ''}`}
           onClick={() => setActiveTab('emergency')}
         >
-          📞 Emergency Contacts
+          📞 {t('emergency_contacts')}
         </button>
         <button 
           className={`tab-btn ${activeTab === 'history' ? 'active' : ''}`}
           onClick={() => setActiveTab('history')}
         >
-          📋 My Alerts ({myAlerts.length})
+          📋 {t('my_alerts')} ({myAlerts.length})
         </button>
       </div>
 
@@ -99,18 +105,18 @@ function TouristDashboard() {
           <div className="dashboard-grid">
             {/* Profile Card */}
             <div className="card profile-card">
-              <h2>👤 Your Profile</h2>
+              <h2>👤 {t('your_profile')}</h2>
               <div className="profile-info">
-                <p><strong>Name:</strong> {user?.name}</p>
-                <p><strong>Email:</strong> {user?.email}</p>
-                <p><strong>Phone:</strong> {user?.phone}</p>
-                <p><strong>Safety Score:</strong> <span className="safety-score">{user?.safetyScore || 100}/100</span></p>
+                <p><strong>{t('name')}:</strong> {user?.name}</p>
+                <p><strong>{t('email')}:</strong> {user?.email}</p>
+                <p><strong>{t('phone')}:</strong> {user?.phone}</p>
+                <p><strong>{t('safety_score')}:</strong> <span className="safety-score">{user?.safetyScore || 100}/100</span></p>
                 {user?.emergencyContact?.name && (
                   <div className="emergency-contact">
-                    <h3>Emergency Contact:</h3>
-                    <p><strong>Name:</strong> {user.emergencyContact.name}</p>
-                    <p><strong>Phone:</strong> {user.emergencyContact.phone}</p>
-                    <p><strong>Relation:</strong> {user.emergencyContact.relation}</p>
+                    <h3>{t('emergency_contact')}:</h3>
+                    <p><strong>{t('name')}:</strong> {user.emergencyContact.name}</p>
+                    <p><strong>{t('phone')}:</strong> {user.emergencyContact.phone}</p>
+                    <p><strong>{t('relation')}:</strong> {user.emergencyContact.relation}</p>
                   </div>
                 )}
               </div>
@@ -118,35 +124,35 @@ function TouristDashboard() {
 
             {/* SOS Button Card */}
             <div className="card sos-card">
-              <h2>🚨 Emergency Alert</h2>
-              <p>Press and hold the button below in case of emergency</p>
+              <h2>🚨 {t('emergency_alert')}</h2>
+              <p>{t('press_sos')}</p>
               <SOSButton touristId={user?._id} onSuccess={handleSOSSuccess} />
             </div>
 
             {/* Quick Actions Card */}
             <div className="card actions-card">
-              <h2>⚡ Quick Actions</h2>
+              <h2>⚡ {t('quick_actions')}</h2>
               <div className="quick-actions">
                 <button 
                   className="action-btn report"
                   onClick={() => setShowIncidentReport(true)}
                 >
                   <span className="action-icon">📝</span>
-                  <span>Report Incident</span>
+                  <span>{t('report_incident')}</span>
                 </button>
                 <button 
                   className="action-btn emergency"
                   onClick={() => setActiveTab('emergency')}
                 >
                   <span className="action-icon">📞</span>
-                  <span>Emergency Contacts</span>
+                  <span>{t('emergency_contacts')}</span>
                 </button>
                 <button 
                   className="action-btn location"
                   onClick={() => window.open('https://www.google.com/maps', '_blank')}
                 >
                   <span className="action-icon">📍</span>
-                  <span>Find Nearby Help</span>
+                  <span>{t('find_nearby_help')}</span>
                 </button>
                 <button 
                   className="action-btn share"
@@ -161,48 +167,48 @@ function TouristDashboard() {
                   }}
                 >
                   <span className="action-icon">📤</span>
-                  <span>Share Location</span>
+                  <span>{t('share_location')}</span>
                 </button>
               </div>
             </div>
 
             {/* Safety Tips */}
             <div className="card tips-card">
-              <h2>💡 Safety Tips</h2>
+              <h2>💡 {t('safety_tips')}</h2>
               <ul className="safety-tips">
-                <li>📱 Keep your phone charged at all times</li>
-                <li>📍 Share your location with trusted contacts</li>
-                <li>🚶 Avoid isolated areas, especially at night</li>
-                <li>👥 Stay in groups when possible</li>
-                <li>🗺️ Keep a map or GPS handy</li>
-                <li>💼 Keep important documents secure</li>
-                <li>🚕 Use registered taxis/ride-sharing services</li>
-                <li>💳 Inform bank about travel plans</li>
+                <li>📱 {t('keep_phone_charged_always')}</li>
+                <li>📍 {t('share_location_trusted')}</li>
+                <li>🚶 {t('avoid_isolated_night')}</li>
+                <li>👥 {t('stay_in_groups')}</li>
+                <li>🗺️ {t('keep_map_gps')}</li>
+                <li>💼 {t('secure_documents')}</li>
+                <li>🚕 {t('use_registered_services')}</li>
+                <li>💳 {t('inform_bank')}</li>
               </ul>
             </div>
 
             {/* Recent Alerts Summary */}
             <div className="card alerts-summary-card">
-              <h2>📊 Your Safety Summary</h2>
+              <h2>📊 {t('your_safety_summary')}</h2>
               <div className="summary-stats">
                 <div className="summary-item">
-                  <span className="summary-label">Total Alerts:</span>
+                  <span className="summary-label">{t('total_alerts')}:</span>
                   <span className="summary-value">{myAlerts.length}</span>
                 </div>
                 <div className="summary-item">
-                  <span className="summary-label">Active:</span>
+                  <span className="summary-label">{t('active')}:</span>
                   <span className="summary-value active">{myAlerts.filter(a => a.status === 'active').length}</span>
                 </div>
                 <div className="summary-item">
-                  <span className="summary-label">Resolved:</span>
+                  <span className="summary-label">{t('resolved')}:</span>
                   <span className="summary-value resolved">{myAlerts.filter(a => a.status === 'resolved').length}</span>
                 </div>
                 <div className="summary-item">
-                  <span className="summary-label">Last Alert:</span>
+                  <span className="summary-label">{t('last_alert')}:</span>
                   <span className="summary-value">
                     {myAlerts.length > 0 
                       ? new Date(myAlerts[0].createdAt).toLocaleDateString() 
-                      : 'None'}
+                      : t('none')}
                   </span>
                 </div>
               </div>
@@ -210,25 +216,25 @@ function TouristDashboard() {
                 className="view-all-btn"
                 onClick={() => setActiveTab('history')}
               >
-                View All Alerts →
+                {t('view_all_alerts')} →
               </button>
             </div>
 
-            {/* Weather Warning (Placeholder) */}
+            {/* Weather Warning */}
             <div className="card weather-card">
-              <h2>🌤️ Weather & Advisories</h2>
+              <h2>🌤️ {t('weather_advisories')}</h2>
               <div className="weather-info">
                 <div className="weather-current">
                   <span className="weather-icon">☀️</span>
                   <span className="weather-temp">28°C</span>
                 </div>
-                <p className="weather-desc">Clear sky, perfect for sightseeing</p>
+                <p className="weather-desc">{t('clear_sky')}</p>
                 <div className="weather-details">
-                  <span>💧 Humidity: 65%</span>
-                  <span>🌬️ Wind: 12 km/h</span>
+                  <span>💧 {t('humidity')}: 65%</span>
+                  <span>🌬️ {t('wind')}: 12 km/h</span>
                 </div>
                 <div className="travel-advisory">
-                  <span className="advisory-badge safe">✅ Safe to Travel</span>
+                  <span className="advisory-badge safe">✅ {t('safe_to_travel')}</span>
                 </div>
               </div>
             </div>
@@ -242,9 +248,9 @@ function TouristDashboard() {
         {activeTab === 'history' && (
           <div className="alerts-history-section">
             <div className="card alerts-history-card">
-              <h2>📋 Your Alert History</h2>
+              <h2>📋 {t('your_alert_history')}</h2>
               {myAlerts.length === 0 ? (
-                <p className="no-alerts">No alerts yet. Stay safe!</p>
+                <p className="no-alerts">{t('no_alerts')}</p>
               ) : (
                 <div className="alerts-list">
                   {myAlerts.map((alert) => (

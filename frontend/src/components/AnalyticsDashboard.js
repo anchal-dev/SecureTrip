@@ -1,11 +1,14 @@
 // src/components/AnalyticsDashboard.js
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { LineChart, Line, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import './AnalyticsDashboard.css';
 
 const COLORS = ['#dc2626', '#f59e0b', '#10b981', '#3b82f6', '#8b5cf6'];
 
 function AnalyticsDashboard({ stats, alertsByType, alertsBySeverity, alertsOverTime }) {
+  const { t } = useTranslation();
+
   // Sample data for demonstration (you'll replace with real data from backend)
   const timelineData = alertsOverTime || [
     { date: 'Mon', alerts: 4 },
@@ -18,18 +21,18 @@ function AnalyticsDashboard({ stats, alertsByType, alertsBySeverity, alertsOverT
   ];
 
   const severityData = alertsBySeverity || [
-    { name: 'Critical', value: 12, color: '#dc2626' },
-    { name: 'High', value: 19, color: '#ea580c' },
-    { name: 'Medium', value: 15, color: '#f59e0b' },
-    { name: 'Low', value: 8, color: '#10b981' },
+    { name: t('critical'), value: 12, color: '#dc2626' },
+    { name: t('high'), value: 19, color: '#ea580c' },
+    { name: t('medium'), value: 15, color: '#f59e0b' },
+    { name: t('low'), value: 8, color: '#10b981' },
   ];
 
   const typeData = alertsByType || [
     { type: 'SOS', count: 25 },
-    { type: 'Medical', count: 12 },
-    { type: 'Theft', count: 8 },
-    { type: 'Lost', count: 6 },
-    { type: 'Other', count: 3 },
+    { type: t('medical'), count: 12 },
+    { type: t('theft'), count: 8 },
+    { type: t('lost'), count: 6 },
+    { type: t('other'), count: 3 },
   ];
 
   const responseTimeData = [
@@ -41,7 +44,7 @@ function AnalyticsDashboard({ stats, alertsByType, alertsBySeverity, alertsOverT
 
   return (
     <div className="analytics-dashboard">
-      <h2>📊 Analytics & Insights</h2>
+      <h2>📊 {t('analytics_insights')}</h2>
 
       {/* Key Metrics */}
       <div className="metrics-grid">
@@ -49,7 +52,7 @@ function AnalyticsDashboard({ stats, alertsByType, alertsBySeverity, alertsOverT
           <div className="metric-icon">🚨</div>
           <div className="metric-content">
             <h3>{stats?.totalAlerts || 0}</h3>
-            <p>Total Alerts</p>
+            <p>{t('total_alerts_card')}</p>
           </div>
         </div>
         
@@ -57,7 +60,7 @@ function AnalyticsDashboard({ stats, alertsByType, alertsBySeverity, alertsOverT
           <div className="metric-icon">⚡</div>
           <div className="metric-content">
             <h3>{stats?.activeAlerts || 0}</h3>
-            <p>Active Now</p>
+            <p>{t('active_now')}</p>
           </div>
         </div>
         
@@ -65,7 +68,7 @@ function AnalyticsDashboard({ stats, alertsByType, alertsBySeverity, alertsOverT
           <div className="metric-icon">✅</div>
           <div className="metric-content">
             <h3>{stats?.resolvedAlerts || 0}</h3>
-            <p>Resolved</p>
+            <p>{t('resolved_card')}</p>
           </div>
         </div>
         
@@ -73,7 +76,7 @@ function AnalyticsDashboard({ stats, alertsByType, alertsBySeverity, alertsOverT
           <div className="metric-icon">⏱️</div>
           <div className="metric-content">
             <h3>4.2 min</h3>
-            <p>Avg Response Time</p>
+            <p>{t('avg_response_time')}</p>
           </div>
         </div>
       </div>
@@ -82,7 +85,7 @@ function AnalyticsDashboard({ stats, alertsByType, alertsBySeverity, alertsOverT
       <div className="charts-grid">
         {/* Alerts Over Time */}
         <div className="chart-card">
-          <h3>📈 Alerts Over Time</h3>
+          <h3>📈 {t('alerts_over_time')}</h3>
           <ResponsiveContainer width="100%" height={250}>
             <LineChart data={timelineData}>
               <CartesianGrid strokeDasharray="3 3" />
@@ -97,7 +100,7 @@ function AnalyticsDashboard({ stats, alertsByType, alertsBySeverity, alertsOverT
 
         {/* Alerts by Severity */}
         <div className="chart-card">
-          <h3>⚠️ Alerts by Severity</h3>
+          <h3>⚠️ {t('alerts_by_severity')}</h3>
           <ResponsiveContainer width="100%" height={250}>
             <PieChart>
               <Pie
@@ -121,7 +124,7 @@ function AnalyticsDashboard({ stats, alertsByType, alertsBySeverity, alertsOverT
 
         {/* Alerts by Type */}
         <div className="chart-card">
-          <h3>📋 Alerts by Type</h3>
+          <h3>📋 {t('alerts_by_type')}</h3>
           <ResponsiveContainer width="100%" height={250}>
             <BarChart data={typeData}>
               <CartesianGrid strokeDasharray="3 3" />
@@ -136,7 +139,7 @@ function AnalyticsDashboard({ stats, alertsByType, alertsBySeverity, alertsOverT
 
         {/* Response Time Distribution */}
         <div className="chart-card">
-          <h3>⏱️ Response Time Distribution</h3>
+          <h3>⏱️ {t('response_time_distribution')}</h3>
           <ResponsiveContainer width="100%" height={250}>
             <BarChart data={responseTimeData}>
               <CartesianGrid strokeDasharray="3 3" />
@@ -153,19 +156,19 @@ function AnalyticsDashboard({ stats, alertsByType, alertsBySeverity, alertsOverT
       {/* Quick Stats */}
       <div className="quick-stats">
         <div className="stat-item">
-          <span className="stat-label">Peak Alert Hour:</span>
+          <span className="stat-label">{t('peak_alert_hour')}:</span>
           <span className="stat-value">8:00 PM - 9:00 PM</span>
         </div>
         <div className="stat-item">
-          <span className="stat-label">Most Common Location:</span>
+          <span className="stat-label">{t('most_common_location')}:</span>
           <span className="stat-value">Hazratganj Area</span>
         </div>
         <div className="stat-item">
-          <span className="stat-label">Resolution Rate:</span>
+          <span className="stat-label">{t('resolution_rate')}:</span>
           <span className="stat-value success">94.5%</span>
         </div>
         <div className="stat-item">
-          <span className="stat-label">Active Officers:</span>
+          <span className="stat-label">{t('active_officers')}:</span>
           <span className="stat-value">12</span>
         </div>
       </div>
