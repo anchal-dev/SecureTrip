@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Offline - Tourist Safety</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+    .container {
+      text-align: center;
+      padding: 2rem;
+    }
+    h1 { font-size: 3rem; margin-bottom: 1rem; }
+    p { font-size: 1.2rem; opacity: 0.9; }
+    button {
+      margin-top: 2rem;
+      padding: 1rem 2rem;
+      font-size: 1rem;
+      background: white;
+      color: #667eea;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    button:hover { opacity: 0.9; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🔴 You're Offline</h1>
+    <p>Please check your internet connection</p>
+    <p style="font-size: 0.9rem; margin-top: 1rem;">
+      ✅ Emergency contacts are still available<br>
+      ✅ Safe zones are cached<br>
+      ✅ SOS alerts will be sent when back online
+    </p>
+    <button onclick="window.location.reload()">Try Again</button>
+  </div>
+</body>
+</html>
