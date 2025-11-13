@@ -1,67 +1,90 @@
-// src/components/LanguageSwitcherSimple.js
-import React from 'react';
+// src/components/LanguageSwitcher.js - FIXED VERSION
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import './LanguageSwitcher.css';
 
-function LanguageSwitcherSimple() {
+const languages = [
+  { code: 'en', name: 'English', flag: '🇬🇧' },
+  { code: 'hi', name: 'हिन्दी', flag: '🇮🇳' },
+  { code: 'es', name: 'Español', flag: '🇪🇸' },
+  { code: 'fr', name: 'Français', flag: '🇫🇷' },
+  { code: 'de', name: 'Deutsch', flag: '🇩🇪' },
+  { code: 'ja', name: '日本語', flag: '🇯🇵' },
+  { code: 'zh', name: '中文', flag: '🇨🇳' },
+  { code: 'ar', name: 'العربية', flag: '🇸🇦' }
+];
+
+function LanguageSwitcher() {
   const { i18n } = useTranslation();
+  const [isOpen, setIsOpen] = useState(false);
+  const [currentLang, setCurrentLang] = useState('en');
 
-  const changeLanguage = (lng) => {
-    i18n.changeLanguage(lng);
-    localStorage.setItem('language', lng);
+  useEffect(() => {
+    const savedLang = localStorage.getItem('language') || 'en';
+    setCurrentLang(savedLang);
+    if (i18n && i18n.changeLanguage) {
+      i18n.changeLanguage(savedLang);
+    }
+  }, [i18n]);
+
+  const handleLanguageChange = (langCode) => {
+    setCurrentLang(langCode);
+    localStorage.setItem('language', langCode);
+    
+    if (i18n && i18n.changeLanguage) {
+      i18n.changeLanguage(langCode);
+    }
+    
+    setIsOpen(false);
+    
+    // Show notification
+    const langName = languages.find(l => l.code === langCode)?.name;
+    console.log(`Language changed to ${langName}`);
   };
 
-  const buttonStyle = {
-    padding: '8px 12px',
-    background: '#667eea',
-    color: 'white',
-    border: 'none',
-    borderRadius: '6px',
-    cursor: 'pointer',
-    fontSize: '13px',
-    fontWeight: '600',
-    transition: 'all 0.3s'
-  };
-
-  const activeStyle = {
-    ...buttonStyle,
-    background: '#764ba2',
-    transform: 'scale(1.05)'
-  };
+  const currentLanguage = languages.find(l => l.code === currentLang) || languages[0];
 
   return (
-    <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+    <div className="language-switcher">
       <button 
-        onClick={() => changeLanguage('en')} 
-        style={i18n.language === 'en' ? activeStyle : buttonStyle}
+        className="language-btn"
+        onClick={() => setIsOpen(!isOpen)}
+        title="Change Language"
       >
-        🇬🇧 EN
+        <span className="lang-flag">{currentLanguage.flag}</span>
+        <span className="lang-code">{currentLang.toUpperCase()}</span>
+        <span className="dropdown-arrow">{isOpen ? '▲' : '▼'}</span>
       </button>
-      <button 
-        onClick={() => changeLanguage('hi')} 
-        style={i18n.language === 'hi' ? activeStyle : buttonStyle}
-      >
-        🇮🇳 HI
-      </button>
-      <button 
-        onClick={() => changeLanguage('as')} 
-        style={i18n.language === 'as' ? activeStyle : buttonStyle}
-      >
-        🇮🇳 AS
-      </button>
-      <button 
-        onClick={() => changeLanguage('bn')} 
-        style={i18n.language === 'bn' ? activeStyle : buttonStyle}
-      >
-        🇮🇳 BN
-      </button>
-      <button 
-        onClick={() => changeLanguage('es')} 
-        style={i18n.language === 'es' ? activeStyle : buttonStyle}
-      >
-        🇪🇸 ES
-      </button>
+
+      {isOpen && (
+        <div className="language-dropdown">
+          <div className="language-header">
+            🌍 Select Language
+          </div>
+          <div className="language-list">
+            {languages.map((lang) => (
+              <button
+                key={lang.code}
+                className={`language-option ${currentLang === lang.code ? 'active' : ''}`}
+                onClick={() => handleLanguageChange(lang.code)}
+              >
+                <span className="lang-flag">{lang.flag}</span>
+                <span className="lang-name">{lang.name}</span>
+                {currentLang === lang.code && <span className="check-mark">✓</span>}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {isOpen && (
+        <div 
+          className="language-backdrop" 
+          onClick={() => setIsOpen(false)}
+        />
+      )}
     </div>
   );
 }
 
-export default LanguageSwitcherSimple;
+export default LanguageSwitcher;

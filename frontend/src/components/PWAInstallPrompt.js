@@ -1,60 +1,55 @@
-// src/components/PWAInstallPrompt.js
 import React, { useState, useEffect } from 'react';
 import './PWAInstallPrompt.css';
 
 function PWAInstallPrompt() {
-  const [installPrompt, setInstallPrompt] = useState(null);
+  const [deferredPrompt, setDeferredPrompt] = useState(null);
   const [showPrompt, setShowPrompt] = useState(false);
 
   useEffect(() => {
     const handler = (e) => {
       e.preventDefault();
-      setInstallPrompt(e);
+      setDeferredPrompt(e);
       setShowPrompt(true);
     };
 
     window.addEventListener('beforeinstallprompt', handler);
 
-    return () => window.removeEventListener('beforeinstallprompt', handler);
+    return () => {
+      window.removeEventListener('beforeinstallprompt', handler);
+    };
   }, []);
 
   const handleInstall = async () => {
-    if (!installPrompt) return;
+    if (!deferredPrompt) return;
 
-    installPrompt.prompt();
-    const { outcome } = await installPrompt.userChoice;
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
     
-    if (outcome === 'accepted') {
-      console.log('✅ PWA installed');
-    }
-    
-    setInstallPrompt(null);
+    console.log(`User response: ${outcome}`);
+    setDeferredPrompt(null);
     setShowPrompt(false);
   };
 
   const handleDismiss = () => {
     setShowPrompt(false);
-    localStorage.setItem('pwa-dismissed', 'true');
   };
 
-  if (!showPrompt || localStorage.getItem('pwa-dismissed')) {
-    return null;
-  }
+  if (!showPrompt) return null;
 
   return (
-    <div className="pwa-install-prompt">
+    <div className="pwa-prompt">
       <div className="pwa-content">
-        <div className="pwa-icon">📱</div>
+        <span className="pwa-icon">📱</span>
         <div className="pwa-text">
-          <h3>Install SecureTrip</h3>
-          <p>Install our app for offline access and better experience!</p>
+          <strong>Install SecureTrip</strong>
+          <p>Use offline & get quick access</p>
         </div>
         <div className="pwa-actions">
-          <button onClick={handleInstall} className="pwa-install-btn">
+          <button onClick={handleInstall} className="pwa-install">
             Install
           </button>
-          <button onClick={handleDismiss} className="pwa-dismiss-btn">
-            Not Now
+          <button onClick={handleDismiss} className="pwa-dismiss">
+            ✕
           </button>
         </div>
       </div>

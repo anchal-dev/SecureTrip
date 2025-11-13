@@ -1,20 +1,25 @@
+// src/index.js - FIXED VERSION
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-
-import './i18n/config'; 
 import App from './App';
-
-// Register service worker (outside the render)
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('/service-worker.js')
-    .then(() => console.log('✅ Service Worker registered successfully.'))
-    .catch(err => console.error('⚠️ Service Worker registration failed:', err));
-}
+import './i18n'; // Import i18n configuration
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-);
+
+// Removed React.StrictMode to prevent double renders
+root.render(<App />);
+
+// Register service worker for PWA (optional)
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker
+      .register('/service-worker.js')
+      .then(registration => {
+        console.log('Service Worker registered:', registration);
+      })
+      .catch(error => {
+        console.log('Service Worker registration failed:', error);
+      });
+  });
+}

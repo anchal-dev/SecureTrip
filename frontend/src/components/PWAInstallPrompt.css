@@ -1,95 +1,93 @@
-/* src/components/PWAInstallPrompt.css */
-.pwa-install-prompt {
+.pwa-prompt {
   position: fixed;
   bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
+  left: 20px;
+  right: 20px;
   z-index: 10000;
-  animation: slideUp 0.5s ease;
+  animation: slideUp 0.3s ease-out;
 }
 
 @keyframes slideUp {
   from {
+    transform: translateY(100px);
     opacity: 0;
-    transform: translate(-50%, 100px);
   }
   to {
+    transform: translateY(0);
     opacity: 1;
-    transform: translate(-50%, 0);
   }
 }
 
 .pwa-content {
-  background: white;
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
   display: flex;
   align-items: center;
-  gap: 15px;
-  max-width: 400px;
+  gap: 12px;
+  background: white;
+  padding: 16px;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  max-width: 500px;
+  margin: 0 auto;
 }
 
 .pwa-icon {
-  font-size: 40px;
+  font-size: 32px;
 }
 
-.pwa-text h3 {
-  margin: 0 0 5px 0;
+.pwa-text {
+  flex: 1;
+}
+
+.pwa-text strong {
+  display: block;
   font-size: 16px;
-  color: #333;
+  color: #2d3748;
+  margin-bottom: 4px;
 }
 
 .pwa-text p {
   margin: 0;
   font-size: 13px;
-  color: #666;
+  color: #718096;
 }
 
 .pwa-actions {
   display: flex;
-  gap: 10px;
+  gap: 8px;
 }
 
-.pwa-install-btn,
-.pwa-dismiss-btn {
-  padding: 8px 16px;
-  border: none;
-  border-radius: 6px;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s;
-}
-
-.pwa-install-btn {
+.pwa-install {
+  padding: 8px 20px;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
 }
 
-.pwa-install-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+.pwa-install:hover {
+  transform: scale(1.05);
 }
 
-.pwa-dismiss-btn {
-  background: #f3f4f6;
-  color: #666;
+.pwa-dismiss {
+  padding: 8px 12px;
+  background: #e2e8f0;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 18px;
+  color: #718096;
 }
 
-.pwa-dismiss-btn:hover {
-  background: #e5e7eb;
+.pwa-dismiss:hover {
+  background: #cbd5e0;
 }
 
-@media (max-width: 768px) {
-  .pwa-install-prompt {
+@media (max-width: 640px) {
+  .pwa-prompt {
     left: 10px;
     right: 10px;
-    transform: none;
-  }
-
-  .pwa-content {
-    flex-direction: column;
-    text-align: center;
   }
 }

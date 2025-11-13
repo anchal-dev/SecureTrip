@@ -1,6 +1,6 @@
-// src/pages/TouristDashboard.js - COMPLETE i18n VERSION
+// src/pages/TouristDashboard.js - COMPLETE WITH ALL FEATURES
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { alertAPI } from '../services/api';
@@ -9,12 +9,16 @@ import IncidentReport from '../components/IncidentReport';
 import EmergencyContacts from '../components/EmergencyContacts';
 import DarkModeToggle from '../components/DarkModeToggle';
 import LanguageSwitcher from '../components/LanguageSwitcher';
-import LanguageSwitcherSimple from '../components/LanguageSwitcherSimple';
+import VoiceCommands from '../components/VoiceCommands';
+import PWAInstallPrompt from '../components/PWAInstallPrompt';
+import Chatbot from '../components/Chatbot';
 import './Dashboard.css';
 
 function TouristDashboard() {
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const hasLoadedOnce = useRef(false);
+  
   const [user, setUser] = useState(null);
   const [myAlerts, setMyAlerts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -22,6 +26,10 @@ function TouristDashboard() {
   const [activeTab, setActiveTab] = useState('overview');
 
   useEffect(() => {
+    // Prevent multiple loads
+    if (hasLoadedOnce.current) return;
+    hasLoadedOnce.current = true;
+
     const userData = JSON.parse(localStorage.getItem('user'));
     if (userData) {
       setUser(userData);
@@ -37,7 +45,7 @@ function TouristDashboard() {
   const loadAlerts = async (touristId) => {
     try {
       const response = await alertAPI.getTouristAlerts(touristId);
-      setMyAlerts(response.data.alerts);
+      setMyAlerts(response.data.alerts || []);
     } catch (error) {
       console.error('Error loading alerts:', error);
     } finally {
@@ -63,6 +71,26 @@ function TouristDashboard() {
     }
   };
 
+  const handleVoiceCommand = (command) => {
+    switch (command) {
+      case 'sos':
+        alert('SOS Alert triggered by voice!');
+        break;
+      case 'report':
+        setShowIncidentReport(true);
+        break;
+      case 'map':
+        setActiveTab('overview');
+        break;
+      case 'contacts':
+        setActiveTab('emergency');
+        break;
+      default:
+        console.log('Unknown command:', command);
+        break;
+    }
+  };
+
   if (loading) {
     return <div className="loading">{t('loading')}</div>;
   }
@@ -72,7 +100,6 @@ function TouristDashboard() {
       <header className="dashboard-header">
         <h1>🛡️ {t('tourist_dashboard')}</h1>
         <div className="header-actions">
-          <LanguageSwitcherSimple />
           <span className="user-name">{t('welcome')}, {user?.name}!</span>
           <button onClick={handleLogout} className="btn-logout">{t('logout')}</button>
         </div>
@@ -293,7 +320,12 @@ function TouristDashboard() {
         />
       )}
 
+      {/* Fixed Components - Bottom of page */}
       <DarkModeToggle />
+      <LanguageSwitcher />
+      <Chatbot />
+      <VoiceCommands onCommand={handleVoiceCommand} touristId={user?._id} />
+      <PWAInstallPrompt />
     </div>
   );
 }

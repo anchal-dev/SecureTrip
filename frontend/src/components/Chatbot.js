@@ -1,68 +1,73 @@
+// src/components/Chatbot.js
 import React, { useState } from 'react';
 import './Chatbot.css';
 
 function Chatbot() {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState([
-    { type: 'bot', text: 'Hi! I\'m your SafetyBot. How can I help you today?' }
+    { type: 'bot', text: 'Hi! I\'m your safety assistant. How can I help you today?' }
   ]);
   const [input, setInput] = useState('');
-
-  const responses = {
-    'help': 'I can help you with: Safety tips, Emergency contacts, Report incidents, Find nearby help, or answer safety questions.',
-    'emergency': 'In an emergency, press the SOS button or call 100 for police, 108 for ambulance.',
-    'safe areas': 'I can show you safe zones on the map. Would you like me to display them?',
-    'report': 'To report an incident, click on "Report Incident" button in your dashboard.',
-    'police': 'You can reach police at 100, or use the Emergency Contacts section.',
-    'hospital': 'For medical emergencies, call 108 or check Emergency Contacts for nearby hospitals.',
-    'lost': 'If you\'re lost, enable location sharing and contact your emergency contact. I can help you find nearby landmarks.',
-    'theft': 'In case of theft: 1) Report to police (100), 2) Report incident in app, 3) Block credit cards if stolen.',
-    'safety tips': '1. Keep phone charged\n2. Share location\n3. Avoid isolated areas\n4. Stay in groups\n5. Use registered transport'
-  };
 
   const handleSend = () => {
     if (!input.trim()) return;
 
-    setMessages([...messages, { type: 'user', text: input }]);
+    // Add user message
+    const userMessage = { type: 'user', text: input };
+    setMessages(prev => [...prev, userMessage]);
 
-    // Simple keyword matching (can be replaced with AI API)
+    // Simple bot responses
+    let botResponse = '';
     const lowerInput = input.toLowerCase();
-    let response = 'I\'m not sure about that. You can try asking about: emergency, safety tips, police, hospital, report incident, or safe areas.';
 
-    for (const [key, value] of Object.entries(responses)) {
-      if (lowerInput.includes(key)) {
-        response = value;
-        break;
-      }
+    if (lowerInput.includes('sos') || lowerInput.includes('emergency')) {
+      botResponse = 'For emergencies, please use the SOS button on your dashboard. Press and hold it to alert authorities.';
+    } else if (lowerInput.includes('help') || lowerInput.includes('assistance')) {
+      botResponse = 'I can help you with: \n• Emergency alerts\n• Finding nearby help\n• Safety tips\n• Reporting incidents';
+    } else if (lowerInput.includes('report')) {
+      botResponse = 'You can report an incident using the "Report Incident" button in Quick Actions.';
+    } else if (lowerInput.includes('contact')) {
+      botResponse = 'Check the Emergency Contacts tab to see important numbers for police, ambulance, and tourist helpline.';
+    } else {
+      botResponse = 'I\'m here to help with safety-related questions. Try asking about emergencies, reporting incidents, or safety tips.';
     }
 
     setTimeout(() => {
-      setMessages(prev => [...prev, { type: 'bot', text: response }]);
+      setMessages(prev => [...prev, { type: 'bot', text: botResponse }]);
     }, 500);
 
     setInput('');
   };
 
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter') {
+      handleSend();
+    }
+  };
+
   return (
-    <>
+    <div className="chatbot">
       <button 
         className="chatbot-toggle"
         onClick={() => setIsOpen(!isOpen)}
+        title="Chat with Safety Assistant"
       >
-        💬 {isOpen ? 'Close' : 'Chat'}
+        {isOpen ? '✕' : '💬'}
       </button>
 
       {isOpen && (
         <div className="chatbot-window">
           <div className="chatbot-header">
-            <h3>🤖 SafetyBot Assistant</h3>
+            <span>🤖 Safety Assistant</span>
             <button onClick={() => setIsOpen(false)}>✕</button>
           </div>
-          
+
           <div className="chatbot-messages">
-            {messages.map((msg, idx) => (
-              <div key={idx} className={`message ${msg.type}`}>
-                {msg.text}
+            {messages.map((msg, index) => (
+              <div key={index} className={`message ${msg.type}`}>
+                <div className="message-bubble">
+                  {msg.text}
+                </div>
               </div>
             ))}
           </div>
@@ -72,14 +77,14 @@ function Chatbot() {
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              onKeyPress={(e) => e.key === 'Enter' && handleSend()}
-              placeholder="Ask me anything..."
+              onKeyPress={handleKeyPress}
+              placeholder="Type your question..."
             />
             <button onClick={handleSend}>Send</button>
           </div>
         </div>
       )}
-    </>
+    </div>
   );
 }
 

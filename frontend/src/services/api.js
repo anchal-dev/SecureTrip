@@ -30,6 +30,7 @@ export const authAPI = {
 export const alertAPI = {
   createSOS: (alertData) => api.post('/alerts/sos', alertData),
   getActiveAlerts: () => api.get('/alerts/active'),
+  getAllAlerts: () => api.get('/alerts'),
   getTouristAlerts: (touristId) => api.get(`/alerts/tourist/${touristId}`),
   updateAlert: (alertId, updateData) => api.patch(`/alerts/${alertId}`, updateData),
   getStats: () => api.get('/alerts/stats')
