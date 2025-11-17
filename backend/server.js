@@ -8,17 +8,36 @@ require('dotenv').config();
 
 const app = express();
 const server = http.createServer(app);
-const io = socketIo(server, {
-  cors: {
-    origin: "http://localhost:3000",
-    methods: ["GET", "POST"]
-  }
-});
 
-// Middleware
-app.use(cors());
+// ALLOWED ORIGINS (for local + deployment)
+const allowedOrigins = [
+  'http://localhost:3000',
+  process.env.FRONTEND_URL
+].filter(Boolean);
+
+// CORS Middleware (Main)
+app.use(cors({
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(null, true); // allow all for now
+    }
+  },
+  credentials: true
+}));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// SOCKET.IO (SINGLE INITIALIZATION)
+const io = socketIo(server, {
+  cors: {
+    origin: allowedOrigins.length > 0 ? allowedOrigins : "*",
+    methods: ["GET", "POST"],
+    credentials: true
+  }
+});
 
 // MongoDB Connection
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/tourist-safety';
@@ -33,35 +52,29 @@ app.use('/api/tourists', require('./routes/tourists'));
 app.use('/api/alerts', require('./routes/alerts'));
 app.use('/api/incidents', require('./routes/incidents'));
 
-// Socket.IO for Real-time Updates
+// Socket.IO Listeners
 io.on('connection', (socket) => {
-  console.log('👤 New client connected:', socket.id);
+  console.log('👤 Client connected:', socket.id);
 
-  // Join user to their personal room
   socket.on('join', (userId) => {
     socket.join(userId);
-    console.log(`User ${userId} joined their room`);
+    console.log(`User ${userId} joined room`);
   });
 
-  // Join authorities to monitoring room
   socket.on('join-authorities', () => {
     socket.join('authorities');
     console.log('Authority joined monitoring room');
   });
 
-  // Handle location updates
   socket.on('location-update', (data) => {
-    // Broadcast to authorities
     io.to('authorities').emit('tourist-location', data);
   });
 
-  // Handle SOS alerts
   socket.on('sos-alert', (data) => {
-    // Broadcast to all authorities
     io.to('authorities').emit('new-alert', {
       ...data,
-      type: 'SOS',
-      severity: 'critical',
+      type: "SOS",
+      severity: "critical",
       timestamp: new Date()
     });
   });
@@ -71,7 +84,7 @@ io.on('connection', (socket) => {
   });
 });
 
-// Make io accessible to routes
+// Make io available to other routes
 app.set('io', io);
 
 // Health Check

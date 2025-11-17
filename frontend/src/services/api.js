@@ -1,4 +1,7 @@
 // src/services/api.js
+
+// import config from '../config';
+// const API_URL = config.API_URL;
 import axios from 'axios';
 
 const API_BASE_URL = 'http://localhost:5000/api';
